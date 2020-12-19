@@ -28,7 +28,7 @@ void loop() {
     inputString = "";
     stringComplete = false;
   }
-  delay(50);
+  delay(1);
 }
 
 /*

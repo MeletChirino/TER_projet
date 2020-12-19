@@ -7,6 +7,9 @@ void serial_blink(int times, int delay_) {
   }
 }
 
-void capture_data(){
-   Serial.println(sin(millis()));
+void capture_data() {
+  float value = sin(millis());
+  Serial.print(value);
+  Serial.print("/");
+  Serial.println(millis());
 }

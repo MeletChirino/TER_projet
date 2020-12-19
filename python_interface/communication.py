@@ -1,31 +1,59 @@
 from time import sleep
 import serial
 
-print("starting program")
-temoin = serial.Serial('/dev/ttyACM0',115200, timeout=.1)
-stop = "a"
-input("pulsa enter")
-temoin.write(b'start\n')
-n = 0
-data = []
-
-while n<= 100:
-
+def read_data(serial):
     incomming_data = ""
-    incomming_data = temoin.readline()
-    #u = int.from_bytes(incomming_data[:-2], byteorder='big', signed=True)
-    u = float(incomming_data[:-2])
+    byte_value = b""
+    result = {'angle':1}
 
-    #print(str(u))
-    data.append(u)
+    while not incomming_data == b"/":
+        incomming_data = serial.read()
+        if(not incomming_data == b"/"):
+            byte_value += incomming_data
 
-    n+=1
+    result['angle'] = float(byte_value)
 
-print("Datos en memoria = ")
-for number in data:
-    print(number)
+    byte_value = b""
 
-print("\n\nfinish Program")
-temoin.write(b'start\n')
-temoin.close()
-exit()
+    while not incomming_data == b"\r":
+        incomming_data = serial.read()
+
+        if(not (incomming_data == b"\n"
+            or incomming_data == b"\r")):
+
+            byte_value += incomming_data
+
+    result['time'] = float(byte_value)
+
+    return result
+
+def main():
+    print("starting program")
+    temoin = serial.Serial('/dev/ttyACM0',115200, timeout=.1)
+    stop = "a"
+    input("pulsa enter")
+    temoin.write(b'start\n')
+    n = 0
+    data = []
+    total_data = 32000
+
+    while n <= total_data:
+        print(str((n/total_data)*100)+"%")
+
+        data.append(read_data(temoin))
+
+        n+=1
+
+
+    temoin.write(b'start\n')
+    temoin.close()
+
+    print("Datos en memoria = ")
+    for number in data:
+        print(number)
+
+    print("\n\nfinish Program")
+
+    exit()
+
+main()
