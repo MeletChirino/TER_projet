@@ -7,17 +7,23 @@ stop = "a"
 input("pulsa enter")
 temoin.write(b'start\n')
 n = 0
+data = []
 
 while n<= 100:
 
     incomming_data = ""
     incomming_data = temoin.readline()
+    #u = int.from_bytes(incomming_data[:-2], byteorder='big', signed=True)
+    u = float(incomming_data[:-2])
 
-    print(incomming_data[:-2])
+    #print(str(u))
+    data.append(u)
 
-    print("message received")
-    #sleep(1)#delay
     n+=1
+
+print("Datos en memoria = ")
+for number in data:
+    print(number)
 
 print("\n\nfinish Program")
 temoin.write(b'start\n')
