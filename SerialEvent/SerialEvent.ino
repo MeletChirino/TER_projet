@@ -37,8 +37,8 @@ void loop() {
   delay response. Multiple bytes of data may be available.
 */
 void serialEvent() {
-  //Serial.println("Serial Event!!\n");
-  serial_blink(2, 100);
+  //Serial.write("ok\n");
+  //serial_blink(5, 300);
   while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read();
