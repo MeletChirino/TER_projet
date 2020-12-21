@@ -3,17 +3,43 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
 
 class MainPage(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.cols = 2
+        self.cols = 1
 
-        self.add_widget(Label(text="Lista de seriales"))
+        self.data1 = GridLayout()
+        self.data1.cols = 2
 
-        self.ip = TextInput(multiline=False)
-        self.add_widget(self.ip)
+        self.data1.add_widget(Label(text="Lista de seriales"))
 
+        self.name = TextInput(multiline=False)
+        self.data1.add_widget(self.name)
+
+        self.send_button = Button(
+                text = "Enviar",
+                font_size = 40
+                )
+        self.send_button.bind(
+                on_press = self.send_button_pressed
+                )
+
+        self.add_widget(self.data1)
+        self.add_widget(self.send_button)
+
+
+    def send_button_pressed(self, instance):
+        print("""
+        Tu ausencia crea un vacio existencial en mi
+        que no puede ser llenado con simple alcohol y
+        drogas.\n
+        """)
+        serial = self.name.text
+        print(serial)
+        self.name.text = ""
+        self.send_button.text = "Cargando..."
 
 class RelayApp(App):
     def build(self):
