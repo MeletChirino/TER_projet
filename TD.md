@@ -1,0 +1,5 @@
+- Primeros pasos con kivy
+- Hacer una interfaz sencilla
+- Recuperar datos de arduino usando kivy
+- Sacar lista de puertos seriales y meterla en kivy
+- Maquillaje
