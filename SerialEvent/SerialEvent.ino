@@ -11,8 +11,8 @@ void setup() {
   inputString.reserve(200);
   pinMode(13, OUTPUT);
 }
-
 void loop() { 
+  if (inputString == "ok?\n") Serial.println("ok");
   if (inputString == "start\n") {
     //Serial.println("toogle transmisison");
     if (send_data) send_data = 0;

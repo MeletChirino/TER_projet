@@ -4,24 +4,39 @@ WindowManager:
 	GetDataPage:
 
 <ConnectPage>:
-	text_input: text_input
+	serial_port: serial_port
+	baud_rate: baud_rate
+	boton: push_button
 	name: "ConnectPage"
 	GridLayout:
 		cols: 1
 		GridLayout:
+			cols: 3
+			Label:
+				text: "Serial Port"
+			TextInput:
+				id: serial_port
+				multiline: False
+			Button:
+				text: "Refresh"
+		GridLayout:
 			cols: 2
 			Label:
-				text: "Puerto Serial"
+				text: "Baud Rate"
 			TextInput:
-				id: text_input
+				id: baud_rate
 				multiline: False
 		Button:
+			id: push_button
 			text: "Conectar"
 			on_press: root.pressing()
 <GetDataPage>:
 	name: "GetData"
 	GridLayout:
-		cols: 1
+		cols: 2
 		Button:
-			text: "presioname, me gusta"
+			text: "Go Back"
+			on_release: app.root.current = "ConnectPage"
+		Button:
+			text: "Get Data"
 			on_release: root.go_back()
