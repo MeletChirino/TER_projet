@@ -1,0 +1,27 @@
+WindowManager:
+	ConnectPage:
+
+	GetDataPage:
+
+<ConnectPage>:
+	text_input: text_input
+	name: "ConnectPage"
+	GridLayout:
+		cols: 1
+		GridLayout:
+			cols: 2
+			Label:
+				text: "Puerto Serial"
+			TextInput:
+				id: text_input
+				multiline: False
+		Button:
+			text: "Conectar"
+			on_press: root.pressing()
+<GetDataPage>:
+	name: "GetData"
+	GridLayout:
+		cols: 1
+		Button:
+			text: "presioname, me gusta"
+			on_release: root.go_back()

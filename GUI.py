@@ -1,59 +1,31 @@
 import kivy
 from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
 from kivy.uix.widget import Widget
+from kivy.lang import Builder
 from kivy.properties import ObjectProperty
+from kivy.uix.screenmanager import ScreenManager, Screen
 
-class MyGrid(Widget):
-    serial = ObjectProperty(None)
+class ConnectPage(Screen):
+    text_input = ObjectProperty(None)
 
     def pressing(self):
-        print("press ", self.serial.text)
-        self.serial.text = ""
+        print("ke ricoolino", self.text_input.text)
+        relay_app.root.current = "GetData"
 
+class GetDataPage(Screen):
+    def go_back(self):
+        print("delicioso")
+        relay_app.root.current = "ConnectPage"
 
-class MainPage(GridLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.cols = 1
+class WindowManager(ScreenManager):
+    pass
 
-        self.data1 = GridLayout()
-        self.data1.cols = 2
-
-        self.data1.add_widget(Label(text="Lista de seriales"))
-
-        self.name = TextInput(multiline=False)
-        self.data1.add_widget(self.name)
-
-        self.send_button = Button(
-                text = "Enviar",
-                font_size = 40
-                )
-        self.send_button.bind(
-                on_press = self.send_button_pressed
-                )
-
-        self.add_widget(self.data1)
-        self.add_widget(self.send_button)
-
-
-    def send_button_pressed(self, instance):
-        print("""
-        Tu ausencia crea un vacio existencial en mi
-        que no puede ser llenado con simple alcohol y
-        drogas.\n
-        """)
-        serial = self.name.text
-        print(serial)
-        self.name.text = ""
-        self.send_button.text = "Cargando..."
+styles = Builder.load_file("styles.kv")
 
 class RelayApp(App):
     def build(self):
-        return MyGrid()
+        return styles
 
 if __name__ == "__main__":
-    RelayApp().run()
+    relay_app = RelayApp()
+    relay_app.run()
