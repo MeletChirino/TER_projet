@@ -7,6 +7,7 @@ WindowManager:
 	serial_port: serial_port
 	baud_rate: baud_rate
 	boton: push_button
+
 	name: "ConnectPage"
 	GridLayout:
 		cols: 1
@@ -14,18 +15,21 @@ WindowManager:
 			cols: 3
 			Label:
 				text: "Serial Port"
-			TextInput:
+			Spinner:
 				id: serial_port
-				multiline: False
+				text: "Select Serial Port"
+				values: []
 			Button:
 				text: "Refresh"
+				on_press: root.scan_serial_ports()
 		GridLayout:
 			cols: 2
 			Label:
 				text: "Baud Rate"
-			TextInput:
+			Spinner:
 				id: baud_rate
-				multiline: False
+				text:"115200"
+				values:["9600","19200","115200","25000"]
 		Button:
 			id: push_button
 			text: "Conectar"
