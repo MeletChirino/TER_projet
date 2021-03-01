@@ -1,37 +1,46 @@
-String inputString = "";         // a String to hold incoming data
-bool stringComplete = false;  // whether the string is complete
+#include "RGBLed.h"
+#include "IrReceiver.h"
 
 /* pins for RGB Led */
-int red_light_pin = 9;
-int green_light_pin = 11;
+int red_light_pin = 11;
+int green_light_pin = 9;
 int blue_light_pin = 10;
 
+RGBLed led_rgb(
+  red_light_pin,
+  green_light_pin, 
+  blue_light_pin
+  );
+  
 /* infrared receiver pin */
-int ir_receiver = 2;
+int ir_capture_pin = 2;
+IrReceiver ir_receiver(ir_capture_pin);
 
 /* transition zone flag */
 bool transition_zone = false;
 
 /* position pins */
-int low_position = 3;
-int high_position = 4;
+int low_position = 7;
+int high_position = 14;
 bool good = false;
+
+String inputString = "";         // a String to hold incoming data
+bool stringComplete = false;  // whether the string is complete
+
 
 void setup() {
   // initialize serial:
   Serial.begin(115200);
+  
   // reserve 200 bytes for the inputString:
   inputString.reserve(200);
-  pinMode(13, OUTPUT);
 
   // initialize RGBPins
-  pinMode(blue_light_pin, OUTPUT);
-  pinMode(green_light_pin, OUTPUT);
-  pinMode(red_light_pin, OUTPUT);
+  led_rgb.init();
 
   // Initialize interrupt service routine
-  pinMode(ir_receiver, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(ir_receiver), change_zone, RISING);
+  ir_receiver.init();
+
 
   // initialize position detector pins
   pinMode(low_position, INPUT_PULLUP);
@@ -45,25 +54,34 @@ void loop() {
   bool high_position_grip;
   bool low_position_change, high_position_change;
   if (!good)
-    blink_red();
+    led_rgb.blink_red(4);
 
-  while (!transition_zone) {
+  while (!transition_zone) { 
     good = false;
     low_position_grip = digitalRead(low_position);
     high_position_grip = digitalRead(high_position);
 
     Serial.print("Transition zone = "); Serial.println(transition_zone);
+    Serial.print("low_position_grip  = "); Serial.println(low_position_grip);
+    Serial.print("high_position_grip  = "); Serial.println(high_position_grip);
+  
 
     if (low_position_grip && high_position_grip || (!low_position_grip && !high_position_grip))
-      RGB_color_set("red");
+      led_rgb.set_red();
     else
-      RGB_color_set("blue");
+      led_rgb.set_blue();
+
+    if(ir_receiver.get_status()){
+      transition_zone = true;
+      delay(200);
+      }
+      
   }
 
   while (transition_zone) {
     Serial.print("Transition zone = "); Serial.println(transition_zone);
     if (good)
-      RGB_color_set("green");
+      led_rgb.set_green();
 
     if (low_position_grip && !good) {
       low_position_change = digitalRead(low_position);
@@ -72,7 +90,7 @@ void loop() {
       if (high_position_change && !low_position_change) {
         good = true;
       } else {
-        RGB_color_set("yellow");
+        led_rgb.set_yellow();
       }
     }
     if (high_position_grip && !good) {
@@ -81,10 +99,13 @@ void loop() {
       if (!high_position_change && low_position_change) {
         good = true;
       } else {
-        RGB_color_set("yellow");
+        led_rgb.set_yellow();
       }
-
     }
+    if(ir_receiver.get_status()){
+      transition_zone = false;
+      delay(200);
+      }
   }
 
 
@@ -101,6 +122,7 @@ void loop() {
 void change_zone() {
   transition_zone = !transition_zone;
   Serial.println("interrupt");
+  delay(300);
 }
 
 
