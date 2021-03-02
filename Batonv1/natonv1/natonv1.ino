@@ -1,5 +1,6 @@
 #include "RGBLed.h"
 #include "IrReceiver.h"
+#include "GripSensor.h"
 
 /* pins for RGB Led */
 int red_light_pin = 11;
@@ -20,9 +21,7 @@ IrReceiver ir_receiver(ir_capture_pin);
 bool transition_zone = false;
 
 /* position pins */
-int low_position = 7;
-int high_position = 14;
-bool good = false;
+GripSensor ldr_sensor(7,14);
 
 String inputString = "";         // a String to hold incoming data
 bool stringComplete = false;  // whether the string is complete
@@ -37,36 +36,24 @@ void setup() {
 
   // initialize RGBPins
   led_rgb.init();
+  led_rgb.test();
 
   // Initialize interrupt service routine
   ir_receiver.init();
 
 
   // initialize position detector pins
-  pinMode(low_position, INPUT_PULLUP);
-  pinMode(high_position, INPUT_PULLUP);
-
+  ldr_sensor.init();
 }
 
 void loop() {
 
-  bool low_position_grip;
-  bool high_position_grip;
-  bool low_position_change, high_position_change;
-  if (!good)
-    led_rgb.blink_red(4);
-
   while (!transition_zone) { 
-    good = false;
-    low_position_grip = digitalRead(low_position);
-    high_position_grip = digitalRead(high_position);
+    //while not in transition zone
+    ldr_sensor.read_grip();
+    ldr_sensor.print_status(transition_zone);  
 
-    Serial.print("Transition zone = "); Serial.println(transition_zone);
-    Serial.print("low_position_grip  = "); Serial.println(low_position_grip);
-    Serial.print("high_position_grip  = "); Serial.println(high_position_grip);
-  
-
-    if (low_position_grip && high_position_grip || (!low_position_grip && !high_position_grip))
+    if (ldr_sensor.grip_ok())
       led_rgb.set_red();
     else
       led_rgb.set_blue();
@@ -74,35 +61,20 @@ void loop() {
     if(ir_receiver.get_status()){
       transition_zone = true;
       delay(200);
-      }
-      
+      }   
   }
 
   while (transition_zone) {
-    Serial.print("Transition zone = "); Serial.println(transition_zone);
-    if (good)
+    //while in transition zone
+    ldr_sensor.print_status(transition_zone);  
+    
+    if (ldr_sensor.good_relay())
       led_rgb.set_green();
+    else
+      led_rgb.set_yellow();
 
-    if (low_position_grip && !good) {
-      low_position_change = digitalRead(low_position);
-      high_position_change = digitalRead(high_position);
-
-      if (high_position_change && !low_position_change) {
-        good = true;
-      } else {
-        led_rgb.set_yellow();
-      }
-    }
-    if (high_position_grip && !good) {
-      low_position_change = digitalRead(low_position);
-      high_position_change = digitalRead(high_position);
-      if (!high_position_change && low_position_change) {
-        good = true;
-      } else {
-        led_rgb.set_yellow();
-      }
-    }
     if(ir_receiver.get_status()){
+      ldr_sensor.reset_relay(led_rgb);
       transition_zone = false;
       delay(200);
       }
