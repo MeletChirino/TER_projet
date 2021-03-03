@@ -1,36 +1,31 @@
-#include<Wire.h>
-const int MPU=0x68; 
-int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
+#include <Wire.h>
+#include "Gy521.h"
+
+Gy521 gy = Gy521();
+int16_t *Ac, *Gy;
+
 
 void setup(){
-  Wire.begin();
-  Wire.beginTransmission(MPU);
-  Wire.write(0x6B); 
-  Wire.write(0);    
-  Wire.endTransmission(true);
   Serial.begin(9600);
+  gy.init();
+  Ac = (int16_t*)malloc(3*sizeof(int16_t));
+  Gy = (int16_t*)malloc(3*sizeof(int16_t));
+
 }
 void loop(){
-  Wire.beginTransmission(MPU);
-  Wire.write(0x3B);  
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU,12,true);  
-  AcX=Wire.read()<<8|Wire.read();    
-  AcY=Wire.read()<<8|Wire.read();  
-  AcZ=Wire.read()<<8|Wire.read();  
-  GyX=Wire.read()<<8|Wire.read();  
-  GyY=Wire.read()<<8|Wire.read();  
-  GyZ=Wire.read()<<8|Wire.read();  
-  
+  gy.read_data();
+
+  Ac = gy.accelerometer_data();
   Serial.print("Accelerometer: ");
-  Serial.print("X = "); Serial.print(AcX);
-  Serial.print(" | Y = "); Serial.print(AcY);
-  Serial.print(" | Z = "); Serial.println(AcZ); 
-  
-  Serial.print("Gyroscope: ");
-  Serial.print("X = "); Serial.print(GyX);
-  Serial.print(" | Y = "); Serial.print(GyY);
-  Serial.print(" | Z = "); Serial.println(GyZ);
+  Serial.print("X = "); Serial.print(Ac[0]);
+  Serial.print(" | Y = "); Serial.print(Ac[1]);
+  Serial.print(" | Z = "); Serial.println(Ac[2]); 
+
+  Gy = gy.gyroscope_data();
+  Serial.print("Gyroscope: ");\
+  Serial.print("X = "); Serial.print(Gy[0]);
+  Serial.print(" | Y = "); Serial.print(Gy[1]);
+  Serial.print(" | Z = "); Serial.println(Gy[2]);
   Serial.println(" ");
   delay(333);
 }
