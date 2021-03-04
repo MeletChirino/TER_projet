@@ -55,7 +55,7 @@ class Temoin():
                 if(not incomming_data == b"/"):
                     byte_value += incomming_data
 
-            result['angle'] = float(byte_value)
+            result['AcZ'] = float(byte_value)
 
             byte_value = b""
 
@@ -74,13 +74,14 @@ class Temoin():
     def get_data(self):
         self.temoin.write(b'start\n')
         self.data = []
-        total_data = 100
-        n = 0
+        total_data = 150
+        n = 1
 
         while n <= total_data:
             print(str((n/total_data)*100)+"%")
             self.data.append(self.read_data(mode=2))
             n+=1
+        print(self.data)
 
         self.temoin.write(b'start\n')
 

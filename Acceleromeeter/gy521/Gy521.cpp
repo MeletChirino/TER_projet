@@ -34,7 +34,6 @@ void Gy521::read_data(int16_t *data){
 	data[0] = _Ac[0];
 	data[1] = _Ac[1];
 	data[2] = _Ac[2];
-	//data[3] = millis();
 
 }
 int16_t* Gy521::accelerometer_data(){

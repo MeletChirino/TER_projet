@@ -29,7 +29,7 @@ def read_data(serial):
 
 def main():
     print("starting program")
-    temoin = serial.Serial('/dev/ttyACM0',115200, timeout=.1)
+    temoin = serial.Serial('/dev/ttyUSB0',115200, timeout=.1)
     stop = "a"
     input("pulsa enter")
     temoin.write(b'start\n')
