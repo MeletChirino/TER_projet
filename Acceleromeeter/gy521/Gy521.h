@@ -13,7 +13,7 @@ class Gy521{
 	    Gy521();
 	    Gy521(uint8_t);
 	    void init();
-	    void read_data();
+	    void read_data(int16_t*);
 	    int16_t* accelerometer_data();
 	    int16_t* gyroscope_data();
 };

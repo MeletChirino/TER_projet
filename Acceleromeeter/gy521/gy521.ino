@@ -1,31 +1,61 @@
 #include <Wire.h>
 #include "Gy521.h"
+#include <avr/pgmspace.h>
 
 Gy521 gy = Gy521();
-int16_t *Ac, *Gy;
 
+int data_size = 100;
 
-void setup(){
-  Serial.begin(9600);
+void setup() {
+  Serial.begin(115200);
+  //Serial.println(F("Serial Ready"));
   gy.init();
-  Ac = (int16_t*)malloc(3*sizeof(int16_t));
-  Gy = (int16_t*)malloc(3*sizeof(int16_t));
+  //Serial.println(F("Gy ready"));
+
+  //Serial.println(F("Memory ready"));
+
+  pinMode(7, OUTPUT);
 
 }
-void loop(){
-  gy.read_data();
+void loop() {
+  int16_t **data;
 
-  Ac = gy.accelerometer_data();
-  Serial.print("Accelerometer: ");
-  Serial.print("X = "); Serial.print(Ac[0]);
-  Serial.print(" | Y = "); Serial.print(Ac[1]);
-  Serial.print(" | Z = "); Serial.println(Ac[2]); 
+  data = (int16_t**)malloc(data_size * sizeof(int16_t*));
+  for (int i = 0; i < data_size; i++)
+    data[i] = (int16_t*)malloc(3 * sizeof(int16_t));
 
-  Gy = gy.gyroscope_data();
-  Serial.print("Gyroscope: ");\
-  Serial.print("X = "); Serial.print(Gy[0]);
-  Serial.print(" | Y = "); Serial.print(Gy[1]);
-  Serial.print(" | Z = "); Serial.println(Gy[2]);
-  Serial.println(" ");
-  delay(333);
+  int i;
+  for (i = 0; i < data_size; i++) {
+    digitalWrite(7, HIGH);
+    gy.read_data(data[i]);
+    Serial.print(F("X = ")); Serial.print(data[i][0]);
+    Serial.print(F(" | Y = ")); Serial.print(data[i][1]);
+    Serial.print(F(" | Z = ")); Serial.print(data[i][2]);
+    Serial.print(F(" | i = ")); Serial.println(i);
+
+    digitalWrite(7, LOW);
+    delay(500);
+
+
+  }
+  digitalWrite(7, LOW); i = 0;
+  for (i = 0; i < data_size; i++) {
+    Serial.print(F("Accelerometer: "));
+    Serial.print(F("X = ")); Serial.print(data[i][0]);
+    Serial.print(F(" | Y = ")); Serial.print(data[i][1]);
+    Serial.print(F(" | Z = ")); Serial.print(data[i][2]);
+    Serial.print(F(" | i = ")); Serial.println(i);
+
+  }
+  digitalWrite(7, HIGH);
+  while (1) {
+    gy.read_data(data[0]);
+    Serial.print(F("Accelerometer: "));
+    Serial.print(F("X = ")); Serial.print(data[0][0]);
+    Serial.print(F(" | Y = ")); Serial.print(data[0][1]);
+    Serial.print(F(" | Z = ")); Serial.print(data[0][2]);
+    Serial.print(F(" | time = ")); Serial.print(millis());
+    Serial.print(F(" | i = ")); Serial.println(i);
+    delay(333);
+  };
 }

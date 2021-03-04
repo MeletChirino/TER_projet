@@ -20,7 +20,7 @@ void Gy521::init(){
 	Wire.write(0);
 	Wire.endTransmission(true);
 }
-void Gy521::read_data(){
+void Gy521::read_data(int16_t *data){
 	Wire.beginTransmission(_addrs);
 	Wire.write(0x3B);
 	Wire.endTransmission(false);
@@ -31,6 +31,11 @@ void Gy521::read_data(){
 	_Gy[0] = Wire.read()<<8|Wire.read();
 	_Gy[1] = Wire.read()<<8|Wire.read();
 	_Gy[2] = Wire.read()<<8|Wire.read();
+	data[0] = _Ac[0];
+	data[1] = _Ac[1];
+	data[2] = _Ac[2];
+	//data[3] = millis();
+
 }
 int16_t* Gy521::accelerometer_data(){
 	return _Ac;
