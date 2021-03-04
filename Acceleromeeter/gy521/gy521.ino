@@ -28,14 +28,9 @@ void loop() {
   for (i = 0; i < data_size; i++) {
     digitalWrite(7, HIGH);
     gy.read_data(data[i]);
-    Serial.print(F("X = ")); Serial.print(data[i][0]);
-    Serial.print(F(" | Y = ")); Serial.print(data[i][1]);
-    Serial.print(F(" | Z = ")); Serial.print(data[i][2]);
-    Serial.print(F(" | i = ")); Serial.println(i);
 
     digitalWrite(7, LOW);
-    delay(500);
-
+    delay(333);
 
   }
   digitalWrite(7, LOW); i = 0;
@@ -47,15 +42,6 @@ void loop() {
     Serial.print(F(" | i = ")); Serial.println(i);
 
   }
-  digitalWrite(7, HIGH);
-  while (1) {
-    gy.read_data(data[0]);
-    Serial.print(F("Accelerometer: "));
-    Serial.print(F("X = ")); Serial.print(data[0][0]);
-    Serial.print(F(" | Y = ")); Serial.print(data[0][1]);
-    Serial.print(F(" | Z = ")); Serial.print(data[0][2]);
-    Serial.print(F(" | time = ")); Serial.print(millis());
-    Serial.print(F(" | i = ")); Serial.println(i);
-    delay(333);
-  };
+  while(1){};
+
 }
