@@ -1,2 +1,11 @@
 venv/*
 *.swp
+Acceleromeeter/gy521/core
+GUI_exemple.py
+circuit/
+pruebas/
+python_interface/FloatingLayout.py
+python_interface/__init__.py
+python_interface/__pycache__/
+*.png
+*.PNG
