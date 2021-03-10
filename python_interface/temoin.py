@@ -74,14 +74,14 @@ class Temoin():
     def get_data(self):
         self.temoin.write(b'start\n')
         self.data = []
-        total_data = 150
+        total_data = 70
         n = 1
 
         while n <= total_data:
             print(str((n/total_data)*100)+"%")
             self.data.append(self.read_data(mode=2))
             n+=1
-        print(self.data)
+        #print(self.data)
 
         self.temoin.write(b'start\n')
 

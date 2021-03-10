@@ -5,6 +5,8 @@ from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
+# matplotlib
+import matplotlib.pyplot as plt
 # Own libraries
 from python_interface.temoin import Temoin
 from python_interface.serial_ports import serial_ports
@@ -48,6 +50,20 @@ class GetDataPage(Screen):
         Method for Getting data from Arduino
         """
         arduino.get_data()
+        print(arduino.data)
+        total = list(range(1, len(arduino.data)))
+        data = []
+        time = []
+        for i in total:
+            data.append(arduino.data[i]['AcZ'])
+            time.append(arduino.data[i]['time'])
+
+        fig, ax = plt.subplots()
+        ax.plot(time, data)
+        ax.grid()
+        fig.savefig('graph.png')
+        fig.show()
+
         #Con los datos aqui en python podemos hacer graficos y la vaina
         #relay_app.root.current = "ConnectPage"
 
