@@ -8,7 +8,7 @@ bool full = false;
 
 Gy521 gy = Gy521();
 
-int data_size = 300;
+int data_size = 100;
 
 void setup() {
   Serial.begin(115200);
@@ -23,45 +23,26 @@ void setup() {
 
 }
 void loop() {
-  int16_t data[data_size], *Ac;
-  int times[data_size];
+  int data[data_size];
+  double times[data_size];
   bool dame = false;
   if (!full) {
-    Ac = (int16_t*)malloc(4 * sizeof(int16_t));
-    //data = (int16_t*)malloc(data_size * sizeof(int16_t));
-
-    int i;
-    for (i = 0; i < data_size; i++) {
+    for (int i = 0; i < data_size; i++) {
       digitalWrite(7, HIGH);
-      gy.read_data(Ac);
-      data[i] = Ac[0];
+      gy.read_data();
+      data[i] = gy.Ac[0];
       times[i] = millis();
 
       digitalWrite(7, LOW);
       delay(333);
 
     }
-    digitalWrite(7, LOW);
-    Serial.println(F(" loop"));
+    digitalWrite(7, HIGH);
+    delay(1000);
+    digitalWrite(7,LOW);
+    //Serial.println(F(" loop"));
     full = true;
   }
-
-
-  if (inputString == "ok?\n") Serial.println("ok");
-  if (inputString == "start\n") {
-    //Serial.println("toogle transmisison");
-    if (send_data) send_data = 0;
-    else send_data = 1;
-    //Serial.println("send_data != send_data");
-  }
-  if (stringComplete) {
-    //Serial.print(inputString);
-    // clear the string:
-    inputString = "";
-    stringComplete = false;
-  }
-  delay(1);
-
   if (send_data) {
     for (int i = 0; i < data_size; i++) {
 
@@ -72,32 +53,27 @@ void loop() {
     send_data = 0;
   }
 
-
-}
-
-bool dame_serial() {
-  Serial.println("dame_serial");
-  stringComplete = false;
-  while (!Serial.available() && !stringComplete) {
-    // get the new byte:
-    char inChar = (char)Serial.read();
-    // add it to the inputString:
-    inputString += inChar;
-    // if the incoming character is a newline, set a flag so the main loop can
-    // do something about it:
-    //Serial.println(inputString);
-    if (inChar == '\n') {
-      stringComplete = true;
-    }
+  if (inputString == "ok?\n") Serial.println("ok");
+  if (inputString == "start\n") {
+    //Serial.println("toogle transmisison");
+    if (send_data) send_data = 0;
+    else send_data = 1;
+    //Serial.println("send_data != send_data");
   }
-  if (stringComplete && inputString == "dame\n")
-    return true;
-  else
-    return false;
+  if (stringComplete) {
+    //Serial.print("STR COMPLETE\n");
+    //Serial.print(inputString);
+    // clear the string:
+    inputString = "";
+    stringComplete = false;
+  }
+  delay(1);
+
 }
+
 void serialEvent() {
-  //Serial.write("ok\n");
-  //serial_blink(5, 300);
+  //Serial.write("SE:\n");
+  //serial_blink(6, 300);
   while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read();
