@@ -9,3 +9,4 @@ python_interface/__init__.py
 python_interface/__pycache__/
 *.png
 *.PNG
+arduino_libraries/
