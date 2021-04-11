@@ -52,7 +52,7 @@ bool transition_zone = false;
 
 //----------------- Serial parameters -----------------
 String inputString = "";         // a String to hold incoming data
-bool stringComplete = false;  // whether the string is complete
+bool stringComplete = false, send_data = false;  // whether the string is complete
 //----------------- Serial parameters -----------------
 
 
@@ -87,15 +87,41 @@ void loop() {
     buzz.stop();
     led_rgb.set_color(100, 0, 100);
     /*
-    for (int i = 0; i < max_laps; i++) {
+      for (int i = 0; i < max_laps; i++) {
       Serial.print("\n\nLap "); Serial.println(i);
       Serial.print("t1 "); Serial.print(race_stats[0][i]);
       Serial.print("t2 "); Serial.print(race_stats[1][i]);
       Serial.print("t3 "); Serial.print(race_stats[2][i]);
       Serial.print("ok = "); Serial.println(race_stats[3][i]);
-    }
-    delay(10000);
+      }
+      delay(10000);
     */
+    if (send_data) {
+      for (int i = 0; i < max_laps; i++) {
+        Serial.print(race_stats[0][i]);
+        Serial.print("/");
+        Serial.print(race_stats[1][i]);
+        Serial.print("/");
+        Serial.print(race_stats[2][i]);
+        Serial.print("/");
+        Serial.println(race_stats[3][i]);
+      }
+      send_data = 0;
+    }
+    if (inputString == "ok?\n") Serial.println("ok");
+    if (inputString == "start\n") {
+      //Serial.println("toogle transmisison");
+      if (send_data) send_data = 0;
+      else send_data = 1;
+      //Serial.println("send_data != send_data");
+    }
+    // print the string when a newline arrives:
+    if (stringComplete) {
+      //Serial.println(inputString);
+      // clear the string:
+      inputString = "";
+      stringComplete = false;
+    }
     return;
   }
 
@@ -143,21 +169,15 @@ void loop() {
     }
 
   }
-/*
-  Serial.print("Lap "); Serial.println(lap);
-  Serial.print("t1 "); Serial.print(race_stats[0][lap-1]);
-  Serial.print("| t2 "); Serial.print(race_stats[1][lap-1]);
-  Serial.print("| t3 "); Serial.print(race_stats[2][lap-1]);
-  Serial.print("| ok = "); Serial.println(race_stats[3][lap-1]);
-*/
+  /*
+    Serial.print("Lap "); Serial.println(lap);
+    Serial.print("t1 "); Serial.print(race_stats[0][lap-1]);
+    Serial.print("| t2 "); Serial.print(race_stats[1][lap-1]);
+    Serial.print("| t3 "); Serial.print(race_stats[2][lap-1]);
+    Serial.print("| ok = "); Serial.println(race_stats[3][lap-1]);
+  */
 
-  // print the string when a newline arrives:
-  if (stringComplete) {
-    Serial.println(inputString);
-    // clear the string:
-    inputString = "";
-    stringComplete = false;
-  }
+
   //Serial.println(millis());
 }
 
@@ -173,8 +193,8 @@ void change_zone() {
   delay response. Multiple bytes of data may be available.
 */
 void serialEvent() {
-  Serial.println("Serial Event!!\n");
-  serial_blink(4, 300);
+  //Serial.println("Serial Event!!\n");
+  //serial_blink(4, 300);
   while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read();
