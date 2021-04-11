@@ -1,12 +1,16 @@
 #ifndef RGBLed_h
 #define RGBLed_h
+#include "Buzzer.h"
 
 class RGBLed{
 	private:
 		int _pinRed, _pinGreen, _pinBlue;
 		int _red, _green, _blue;
+    int _buzz;
+    bool _buzz_state;
 	public:
 		RGBLed(int, int, int);
+    RGBLed(int, int, int, int);
 		void init();
 		void set_color(int, int, int);
 		void set_blue();
