@@ -29,6 +29,10 @@ RGBLed led_rgb(
 //----------------- RGB Led config -----------------
 
 //----------------- Race stats -----------------
+//this variable knows how many relays have been done while the race
+int lap = 0;
+int max_laps = 5;
+
 /*
   A simple matrix that holds some stats of the race:
   t1 -> time to arrive to transition zone
@@ -38,7 +42,7 @@ RGBLed led_rgb(
   [t1, t2, t3, relay_state]
   it can hold up to 6 relays in this version, can be upgraded if needed
 */
-float relay_stats[4][6];
+float race_stats[4][5];
 
 //this variable saves if any grip errorr is made
 float grip_errors[40];
@@ -63,18 +67,37 @@ void setup() {
   //initialize buzzer
   buzz.init();
 
-  // initialize RGBPins
-  led_rgb.init();
-  led_rgb.test();
-
   // Initialize interrupt service routine
   ir_receiver.init();
 
   // initialize position detector pins
   ldr_sensor.init();
+
+  // initialize RGBPins
+  led_rgb.init();
+  led_rgb.set_color(100, 0, 100);
+
+  //delay(10000);
+  led_rgb.test();
 }
 
 void loop() {
+
+  if (lap >= max_laps) {
+    buzz.stop();
+    led_rgb.set_color(100, 0, 100);
+    /*
+    for (int i = 0; i < max_laps; i++) {
+      Serial.print("\n\nLap "); Serial.println(i);
+      Serial.print("t1 "); Serial.print(race_stats[0][i]);
+      Serial.print("t2 "); Serial.print(race_stats[1][i]);
+      Serial.print("t3 "); Serial.print(race_stats[2][i]);
+      Serial.print("ok = "); Serial.println(race_stats[3][i]);
+    }
+    delay(10000);
+    */
+    return;
+  }
 
   while (!transition_zone) {
     buzz.stop();
@@ -90,6 +113,7 @@ void loop() {
     if (ir_receiver.get_status()) {
       transition_zone = true;
       buzz.melody_time = millis();
+      race_stats[0][lap] = millis();
       delay(200);
     }
   }
@@ -99,21 +123,33 @@ void loop() {
     ldr_sensor.print_status(transition_zone);
 
     if (ldr_sensor.good_relay()) {
-
-      led_rgb.set_green();
       buzz.victory();
+      led_rgb.set_green();
+      if (race_stats[1][lap] == 0) {
+        race_stats[1][lap] = millis() - race_stats[0][lap];
+        race_stats[3][lap] = 1;
+      }
     } else {
       buzz.transition_zone();
       led_rgb.set_yellow();
+      race_stats[3][lap] = 0;
     }
     if (ir_receiver.get_status()) {
       ldr_sensor.reset_relay(led_rgb);
       transition_zone = false;
+      race_stats[2][lap] = millis() - race_stats[1][lap];
+      lap++;
       delay(200);
     }
 
   }
-
+/*
+  Serial.print("Lap "); Serial.println(lap);
+  Serial.print("t1 "); Serial.print(race_stats[0][lap-1]);
+  Serial.print("| t2 "); Serial.print(race_stats[1][lap-1]);
+  Serial.print("| t3 "); Serial.print(race_stats[2][lap-1]);
+  Serial.print("| ok = "); Serial.println(race_stats[3][lap-1]);
+*/
 
   // print the string when a newline arrives:
   if (stringComplete) {
@@ -130,8 +166,6 @@ void change_zone() {
   Serial.println("interrupt");
   delay(300);
 }
-
-
 
 /*
   SerialEvent occurs whenever a new data comes in the hardware serial RX. This
@@ -152,18 +186,4 @@ void serialEvent() {
       stringComplete = true;
     }
   }
-}
-void serial_blink(int times, int delay_) {
-  for (int i = 0; i < times; i++) {
-    digitalWrite(13, HIGH);
-    delay(delay_);
-    digitalWrite(13, LOW);
-    delay(delay_);
-  }
-}
-void buzzer_beep(int delay_, int tone_) {
-  analogWrite(6, tone_);
-  delay(delay_);
-  digitalWrite(6, 0);
-
 }
