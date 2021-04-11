@@ -23,9 +23,9 @@ void GripSensor::read_grip(){
 }
 void GripSensor::print_status(bool transition_zone){
 	if(_debug){
-		Serial.print("Transition zone = "); Serial.println(transition_zone);
-		Serial.print("low_position_grip  = "); Serial.println(_low_position_grip);
-		Serial.print("high_position_grip  = "); Serial.println(_high_position_grip);
+		//Serial.print("Transition zone = "); Serial.println(transition_zone);
+		//Serial.print("low_position_grip  = "); Serial.println(_low_position_grip);
+		//Serial.print("high_position_grip  = "); Serial.println(_high_position_grip);
 	}
 }
 bool GripSensor::grip_ok(){
