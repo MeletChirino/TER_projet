@@ -73,7 +73,7 @@ def report_page(request):
                 times_lapse.append(new_time)
 
         print(F'times\nLen = {len(times_lapse)}')
-        print(times_lapse)
+        print(times)
 
         speed = distance / times_lapse
         print(speed)
@@ -103,13 +103,13 @@ def report_page(request):
 
 
         data = {
-                't1': t1,
-                't2': t2,
-                't3': t3,
-                'relay': relay_state,
                 'img': img_path,
+                'speed': speed.tolist(),
+                'mean_speed': distance[-1]/times[-1],
+                'state': relay_state,
+
                 }
-        return render(request, 'index.html', context={'img': img_path})
+        #return render(request, 'index.html', context={'img': img_path})
         return render(request, 'index.html', context=data)
     else:
         pass

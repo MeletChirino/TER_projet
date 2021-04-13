@@ -45,8 +45,10 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
 										<img src="{% static 'img/graph.png' %}" >
-								  <p>{{t1}}</p>
-                                  <p> Mean speed = 80 km/h </p>
+										{% for vel in speed %}
+											<p> vel = {{ vel }}</p><br>
+										{% endfor %}
+										<p> Mean speed = {{mean_speed}} </p>
 
                                 </div>
                             </div>
@@ -57,7 +59,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Vertical Movement Plot</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Relais bien faits</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
