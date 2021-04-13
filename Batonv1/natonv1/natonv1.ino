@@ -98,13 +98,17 @@ void loop() {
     */
     if (send_data) {
       for (int i = 0; i < max_laps; i++) {
+        Serial.print("s");
+        Serial.print("/");
         Serial.print(race_stats[0][i]);
         Serial.print("/");
         Serial.print(race_stats[1][i]);
         Serial.print("/");
         Serial.print(race_stats[2][i]);
         Serial.print("/");
-        Serial.println(race_stats[3][i]);
+        Serial.print (race_stats[3][i]);
+        Serial.print("/");
+        Serial.println("s");
       }
       send_data = 0;
     }
@@ -152,7 +156,7 @@ void loop() {
       buzz.victory();
       led_rgb.set_green();
       if (race_stats[1][lap] == 0) {
-        race_stats[1][lap] = millis() - race_stats[0][lap];
+        race_stats[1][lap] = millis();
         race_stats[3][lap] = 1;
       }
     } else {
@@ -163,7 +167,7 @@ void loop() {
     if (ir_receiver.get_status()) {
       ldr_sensor.reset_relay(led_rgb);
       transition_zone = false;
-      race_stats[2][lap] = millis() - race_stats[1][lap];
+      race_stats[2][lap] = millis();
       lap++;
       delay(200);
     }

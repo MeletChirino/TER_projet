@@ -46,17 +46,9 @@ class Temoin():
                     or incomming_data == b"\r")):
 
                     byte_value += incomming_data
+            print(byte_value)
             return byte_value
         elif(mode == 2):
-            result = {'angle':1}
-
-            while not incomming_data == b"/":
-                incomming_data = self.temoin.read()
-                if(not incomming_data == b"/"):
-                    byte_value += incomming_data
-
-            result['AcZ'] = float(byte_value)
-
             byte_value = b""
 
             while not incomming_data == b"\r":
@@ -67,25 +59,24 @@ class Temoin():
 
                     byte_value += incomming_data
 
-            result['time'] = float(byte_value)
-
-            return result
+            return byte_value
 
     def get_data(self):
         self.temoin.write(b'start\n')
         self.data = []
-        total_data = 70
+        total_data = 5
+        new_data = []
         n = 1
 
         while n <= total_data:
             print(str((n/total_data)*100)+"%")
-            self.data.append(self.read_data(mode=2))
+            new_data.append(self.read_data(mode=1))
             n+=1
-        #print(self.data)
 
-        self.temoin.write(b'start\n')
+        print("data inside object")
+        print(new_data)
+        return new_data
 
-        print(self.data)
 
     def close(self):
         self.connected = False
