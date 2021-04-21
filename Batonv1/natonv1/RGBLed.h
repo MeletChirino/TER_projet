@@ -20,6 +20,7 @@ class RGBLed{
 		void lights_on();
 		void blink_red(int);
 		void test();
+    void blink_green(int);
 };
 
 #endif

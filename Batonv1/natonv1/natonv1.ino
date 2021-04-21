@@ -144,7 +144,8 @@ void loop() {
       transition_zone = true;
       buzz.melody_time = millis();
       race_stats[0][lap] = millis();
-      delay(200);
+      led_rgb.blink_green(2);
+      //delay(500);
     }
   }
 
@@ -169,7 +170,8 @@ void loop() {
       transition_zone = false;
       race_stats[2][lap] = millis();
       lap++;
-      delay(200);
+      led_rgb.blink_green(2);
+      //delay(500);
     }
 
   }

@@ -60,6 +60,18 @@ void RGBLed::blink_red(int times) {
     delay(delay_);
   }
 }
+void RGBLed::blink_green(int times) {
+  int delay_ = 200;
+  for (int i = 0; i < times; i++)
+  {
+    //if(_buzz_state) analogWrite(_buzz, 255);
+    set_green();
+    delay(delay_);
+    //if(_buzz_state) analogWrite(_buzz, 0);
+    set_blue();
+    delay(delay_);
+  }
+}
 void RGBLed::test() {
   //Serial.print("Pines ");
   //Serial.print("R =");Serial.print(_pinRed);
